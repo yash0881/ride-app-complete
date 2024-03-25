@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface VehicleRepository extends JpaRepository<VehicleEntity, VehicleId> {
 
-    List<VehicleEntity> findByVehicleId_VehicleTypeAndVehicleId_CityAndVehicleId_AreaType(VehicleType vehicleType, String city, AreaType areaType);
+    List<VehicleEntity> findByVehicleId_VehicleTypeAndVehicleId_CityAndVehicleId_AreaTypeAndIsAvailableTrue(VehicleType vehicleType, String city, AreaType areaType);
 
     Optional<VehicleEntity> findByVehicleId_VehicleNumber(String vehicleNumber);
 

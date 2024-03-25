@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface VehicleAvailabilityMapRepository extends JpaRepository<VehicleAvailabilityMapEntity, VehicleId> {
 
-    List<VehicleAvailabilityMapEntity> findByVehicleMapId_CityAndVehicleMapId_AreaType(String city, AreaType areaType);
+    List<VehicleAvailabilityMapEntity> findByVehicleMapId_CityAndVehicleMapId_AreaTypeAndCountGreaterThan(String city, AreaType areaType, int count);
 
     VehicleAvailabilityMapEntity findByVehicleMapId_VehicleTypeAndVehicleMapId_CityAndVehicleMapId_AreaType(VehicleType vehicleType, String city, AreaType areaType);
 }

@@ -22,7 +22,7 @@ public class VehicleAvailabilityMapServiceImpl implements VehicleAvailabilityMap
         System.out.print("hello world");
         VehicleAvailabilityMapEntity vehicleAvailabilityMap = vehicleAvailabilityMapRepository.findByVehicleMapId_VehicleTypeAndVehicleMapId_CityAndVehicleMapId_AreaType(vehicleType, city, areaType);
         int currentCount = vehicleAvailabilityMap.getCount();
-        if (currentCount > 0) {
+        if (currentCount >= 0) {
             vehicleAvailabilityMap.setCount(currentCount + 1);
         }
         vehicleAvailabilityMapRepository.save(vehicleAvailabilityMap);

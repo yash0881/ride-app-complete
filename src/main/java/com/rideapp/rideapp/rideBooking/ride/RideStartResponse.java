@@ -7,9 +7,14 @@ public class RideStartResponse {
     private String vehicleNumber;
     private VehicleType vehicleType;
     private String message;
+    private double totalFare;
 
 
     public RideStartResponse() {
+    }
+
+    public RideStartResponse(String message){
+        this.message=message;
     }
 
     public RideStartResponse(int rideId, String vehicleNumber, VehicleType vehicleType, String message) {
@@ -17,6 +22,13 @@ public class RideStartResponse {
         this.vehicleNumber = vehicleNumber;
         this.vehicleType = vehicleType;
         this.message=message;
+    }
+    public RideStartResponse(int rideId, String vehicleNumber, VehicleType vehicleType, String message, double totalFare) {
+        this.rideId = rideId;
+        this.vehicleNumber = vehicleNumber;
+        this.vehicleType = vehicleType;
+        this.message=message;
+        this.totalFare=totalFare;
     }
 
     public int getRideId() {
@@ -49,5 +61,14 @@ public class RideStartResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+
+    public double getTotalFare() {
+        return totalFare;
+    }
+
+    public void setTotalFare(double totalFare) {
+        this.totalFare = totalFare;
     }
 }

@@ -49,7 +49,7 @@ public class RideServiceImpl implements RideService{
     public List<RideFareResponse> getAvailableVehiclesWithFare(RideFareRequest request) {
         String city = request.getCity();
         AreaType areaType = request.getAreaType();
-        List<VehicleAvailabilityMapEntity> vehicleAvailabilityMapEntity = vehicleAvailabilityMapRepository.findByVehicleMapId_CityAndVehicleMapId_AreaType(city, areaType);
+        List<VehicleAvailabilityMapEntity> vehicleAvailabilityMapEntity = vehicleAvailabilityMapRepository.findByVehicleMapId_CityAndVehicleMapId_AreaTypeAndCountGreaterThan(city, areaType, 0);
         List<VehicleType> availableVehicles = new ArrayList<>();
 
         for(VehicleAvailabilityMapEntity entity : vehicleAvailabilityMapEntity){
@@ -94,20 +94,20 @@ public class RideServiceImpl implements RideService{
                         ride.setRideStatus(request.getRideStatus());
                         rideRepository.save(ride);
                         String message = "You ride has finished successfully";
-                        return new RideStartResponse(ride.getRideId(), ride.getVehicleNumber(), ride.getVehicleType(), message);
+                        return new RideStartResponse(ride.getRideId(), ride.getVehicleNumber(), ride.getVehicleType(), message, request.getTotalFare());
             }else {
                 // Check if the user has an ongoing ride
                 List<RideEntity> ongoingRides = rideRepository.findByUserIdAndRideStatus(request.getUserId(), RideStatus.Ongoing);
                 if (!ongoingRides.isEmpty()) {
                     String message = "You already have a ride in progress. Please complete your current ride before booking another one.";
-                    return new RideStartResponse(0, null, null, message);
+                    return new RideStartResponse(message);
                 } else {
                     VehicleEntity vehicleEntity = vehicleService.getVehicleNumber(request.getVehicleType(), request.getCity(), request.getAreaType());
                     String vehicleNumber = vehicleEntity.getVehicleId().getVehicleNumber();
                     vehicleAvailabilityMapService.decreaseCountOfVehicle(request.getVehicleType(), request.getCity(), request.getAreaType());
                     RideEntity rideEntity = addDetailsToRideTable(request, vehicleNumber);
                     String message = "Your ride has started successfully";
-                    return new RideStartResponse(rideEntity.getRideId(), rideEntity.getVehicleNumber(), rideEntity.getVehicleType(), message);
+                    return new RideStartResponse(rideEntity.getRideId(), rideEntity.getVehicleNumber(), rideEntity.getVehicleType(), message, request.getTotalFare());
                 }
             }
     }
