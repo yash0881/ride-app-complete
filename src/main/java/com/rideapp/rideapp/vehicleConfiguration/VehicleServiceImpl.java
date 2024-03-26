@@ -30,7 +30,6 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public Vehicle addVehicle(Vehicle vehicle) {
 
-
         // creating the new object of vehicle
         VehicleEntity vehicleEntity = new VehicleEntity();
 
@@ -50,25 +49,20 @@ public class VehicleServiceImpl implements VehicleService {
         String veh_num = vehicleEntity.getVehicleId().getVehicleNumber();
         Optional<VehicleEntity> isPresent = vehicleRepository.findByVehicleId_VehicleNumber(veh_num);
 
-        if(isPresent.isEmpty()){
+        if(isPresent.isEmpty() && vehicle.getIsAvailable()){
             // increasing the count of new vehicle in map if it is not a modification request
-            if(vehicle.getIsAvailable()) {
                 vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
-            }
-        }else {
+        }else if(isPresent.get().getIsAvailable() && !vehicle.getIsAvailable()) {
             vehicleAvailabilityMapService.decreaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
+        }else if(!isPresent.get().getIsAvailable() && vehicle.getIsAvailable()){
+            vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
         }
 
         // saving the new object of vehicle in vehicle table
         VehicleEntity savedEntity = vehicleRepository.save(vehicleEntity);
 
-
-
-
         return new Vehicle(savedEntity.getVehicleId().getVehicleNumber(), savedEntity.getVehicleId().getVehicleType(), savedEntity.getVehicleId().getCity(), savedEntity.getVehicleId().getAreaType(), savedEntity.getIsAvailable(), savedEntity.getCreatedAt(), savedEntity.getUpdatedAt());
     }
-
-
 
 
     @Override
