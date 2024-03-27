@@ -9,9 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehicleAvailabilityMapServiceImpl implements VehicleAvailabilityMapService{
 
-    @Autowired
     private final VehicleAvailabilityMapRepository vehicleAvailabilityMapRepository;
 
+
+    @Autowired
     public VehicleAvailabilityMapServiceImpl(VehicleAvailabilityMapRepository vehicleAvailabilityMapRepository) {
         this.vehicleAvailabilityMapRepository = vehicleAvailabilityMapRepository;
     }

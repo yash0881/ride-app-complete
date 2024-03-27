@@ -14,11 +14,10 @@ import java.util.Optional;
 public class VehicleServiceImpl implements VehicleService {
 
 
-    @Autowired
     private final VehicleRepository vehicleRepository;
 
-    @Autowired
     private final VehicleAvailabilityMapService vehicleAvailabilityMapService;
+
 
 
     @Autowired

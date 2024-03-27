@@ -12,10 +12,12 @@ import java.util.List;
 public class FareServiceImpl implements FareService {
 
 
-    @Autowired
+
     private final FareRepository repository;
 
 
+
+    @Autowired
     public FareServiceImpl(FareRepository repository) {
         this.repository = repository;
     }

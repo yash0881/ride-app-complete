@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class VehicleController {
 
 
-    @Autowired
     private final VehicleService vehicleService;
 
 
+
+    @Autowired
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }

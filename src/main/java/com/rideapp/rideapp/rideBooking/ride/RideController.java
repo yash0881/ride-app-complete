@@ -16,9 +16,10 @@ import java.util.List;
 public class RideController {
 
 
-    @Autowired
     private final RideService rideService;
 
+
+    @Autowired
     public RideController(RideService rideService) {
         this.rideService = rideService;
     }

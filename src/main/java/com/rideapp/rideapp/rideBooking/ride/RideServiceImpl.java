@@ -23,19 +23,16 @@ import java.util.Optional;
 public class RideServiceImpl implements RideService{
 
 
-    @Autowired
     private final  RideRepository rideRepository;
-    @Autowired
     private final VehicleAvailabilityMapRepository vehicleAvailabilityMapRepository;
-    @Autowired
     private final FareService fareService;
 
-    @Autowired
     private final VehicleService vehicleService;
 
-    @Autowired
     private final VehicleAvailabilityMapService vehicleAvailabilityMapService;
 
+
+    @Autowired
     public RideServiceImpl(RideRepository rideRepository, VehicleAvailabilityMapRepository vehicleAvailabilityMapRepository, FareService fareService, VehicleService vehicleService, VehicleAvailabilityMapService vehicleAvailabilityMapService) {
         this.rideRepository = rideRepository;
         this.vehicleAvailabilityMapRepository = vehicleAvailabilityMapRepository;
