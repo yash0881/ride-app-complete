@@ -20,10 +20,10 @@ import java.util.Optional;
 
 
 @Service
-public class RideServiceImpl implements RideService{
+public class RideServiceImpl implements RideService {
 
 
-    private final  RideRepository rideRepository;
+    private final RideRepository rideRepository;
     private final VehicleAvailabilityMapRepository vehicleAvailabilityMapRepository;
     private final FareService fareService;
 
@@ -49,7 +49,7 @@ public class RideServiceImpl implements RideService{
         List<VehicleAvailabilityMapEntity> vehicleAvailabilityMapEntity = vehicleAvailabilityMapRepository.findByVehicleMapId_CityAndVehicleMapId_AreaTypeAndCountGreaterThan(city, areaType, 0);
         List<VehicleType> availableVehicles = new ArrayList<>();
 
-        for(VehicleAvailabilityMapEntity entity : vehicleAvailabilityMapEntity){
+        for (VehicleAvailabilityMapEntity entity : vehicleAvailabilityMapEntity) {
             availableVehicles.add(entity.getVehicleMapId().getVehicleType());
         }
 
@@ -74,43 +74,49 @@ public class RideServiceImpl implements RideService{
     private double calculateTotalFare(FareEntity fare, float distance, int extraStops, boolean peakHours) {
         double baseFare = fare.getBaseFare();
         double farePerKm = fare.getPerKmFare();
-        if(peakHours)
-            baseFare+=fare.getPeakFare();
-        return baseFare + (distance * farePerKm) + (extraStops * fare.getPerStopFare()) ;
+        if (peakHours)
+            baseFare += fare.getPeakFare();
+        return baseFare + (distance * farePerKm) + (extraStops * fare.getPerStopFare());
 
     }
 
 
     @Override
     public RideStartResponse startRide(RideStartRequest request) {
-            if(request.getRideId()>0){
-                        vehicleService.markAvailableAsTrue(request.getVehicleNumber(), request.getVehicleType(),request.getCity(),request.getAreaType());
-                        vehicleAvailabilityMapService.increaseCountOfVehicle(request.getVehicleType(), request.getCity(), request.getAreaType());
-                        Optional<RideEntity> rideEntity = rideRepository.findById(request.getRideId());
-                        RideEntity ride = rideEntity.get();
-                        ride.setRideStatus(request.getRideStatus());
-                        rideRepository.save(ride);
-                        String message = "You ride has finished successfully";
-                        return new RideStartResponse(ride.getRideId(), ride.getVehicleNumber(), ride.getVehicleType(), message, request.getTotalFare());
-            }else {
-                // Check if the user has an ongoing ride
-                List<RideEntity> ongoingRides = rideRepository.findByUserIdAndRideStatus(request.getUserId(), RideStatus.Ongoing);
-                if (!ongoingRides.isEmpty()) {
-                    String message = "You already have a ride in progress. Please complete your current ride before booking another one.";
-                    return new RideStartResponse(message);
-                } else {
-                    VehicleEntity vehicleEntity = vehicleService.getVehicleNumber(request.getVehicleType(), request.getCity(), request.getAreaType());
-                    String vehicleNumber = vehicleEntity.getVehicleId().getVehicleNumber();
-                    vehicleAvailabilityMapService.decreaseCountOfVehicle(request.getVehicleType(), request.getCity(), request.getAreaType());
-                    RideEntity rideEntity = addDetailsToRideTable(request, vehicleNumber);
-                    String message = "Your ride has started successfully";
-                    return new RideStartResponse(rideEntity.getRideId(), rideEntity.getVehicleNumber(), rideEntity.getVehicleType(), message, request.getTotalFare());
-                }
+        if (request.getRideId() > 0) {
+            if (RideStatus.Ongoing.equals(request.getRideStatus())) {
+                throw new InvalidRequestException("Invalid ride status: Ongoing");
             }
+            vehicleService.markAvailableAsTrue(request.getVehicleNumber(), request.getVehicleType(), request.getCity(), request.getAreaType());
+            vehicleAvailabilityMapService.increaseCountOfVehicle(request.getVehicleType(), request.getCity(), request.getAreaType());
+            Optional<RideEntity> rideEntity = rideRepository.findById(request.getRideId());
+            RideEntity ride = rideEntity.get();
+            if (RideStatus.Ongoing.equals(request.getRideStatus())) {
+                throw new InvalidRequestException("Invalid ride status: Ongoing");
+            }
+            ride.setRideStatus(request.getRideStatus());
+            rideRepository.save(ride);
+            String message = "You ride has finished successfully";
+            return new RideStartResponse(ride.getRideId(), ride.getVehicleNumber(), ride.getVehicleType(), message, request.getTotalFare());
+        } else {
+            // Check if the user has an ongoing ride
+            List<RideEntity> ongoingRides = rideRepository.findByUserIdAndRideStatus(request.getUserId(), RideStatus.Ongoing);
+            if (!ongoingRides.isEmpty()) {
+                String message = "You already have a ride in progress. Please complete your current ride before booking another one.";
+                return new RideStartResponse(message);
+            } else {
+                VehicleEntity vehicleEntity = vehicleService.getVehicleNumber(request.getVehicleType(), request.getCity(), request.getAreaType());
+                String vehicleNumber = vehicleEntity.getVehicleId().getVehicleNumber();
+                vehicleAvailabilityMapService.decreaseCountOfVehicle(request.getVehicleType(), request.getCity(), request.getAreaType());
+                RideEntity rideEntity = addDetailsToRideTable(request, vehicleNumber);
+                String message = "Your ride has started successfully";
+                return new RideStartResponse(rideEntity.getRideId(), rideEntity.getVehicleNumber(), rideEntity.getVehicleType(), message, request.getTotalFare());
+            }
+        }
     }
 
 
-    public RideEntity addDetailsToRideTable(RideStartRequest request, String vehicleNumber){
+    public RideEntity addDetailsToRideTable(RideStartRequest request, String vehicleNumber) {
 
         RideEntity rideEntity = new RideEntity();
 

@@ -52,7 +52,7 @@ public class VehicleServiceImpl implements VehicleService {
             // increasing the count of new vehicle in map if it is not a modification request
                 vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
         }else if(isPresent.get().getIsAvailable() && !vehicle.getIsAvailable()) {
-            vehicleEntity.setCreatedAt(LocalDateTime.now());
+            vehicleEntity.setUpdatedAt(LocalDateTime.now());
             vehicleAvailabilityMapService.decreaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
         }else if(!isPresent.get().getIsAvailable() && vehicle.getIsAvailable()){
             vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
@@ -63,6 +63,8 @@ public class VehicleServiceImpl implements VehicleService {
 
         return new Vehicle(savedEntity.getVehicleId().getVehicleNumber(), savedEntity.getVehicleId().getVehicleType(), savedEntity.getVehicleId().getCity(), savedEntity.getVehicleId().getAreaType(), savedEntity.getIsAvailable(), savedEntity.getCreatedAt(), savedEntity.getUpdatedAt());
     }
+
+
 
 
     @Override

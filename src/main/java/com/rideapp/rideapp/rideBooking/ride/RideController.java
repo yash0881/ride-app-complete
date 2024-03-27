@@ -5,9 +5,8 @@ import com.rideapp.rideapp.rideBooking.fare.RideFareResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
@@ -45,7 +44,9 @@ public class RideController {
         try {
             RideStartResponse startResponse = rideService.startRide(request);
             return ResponseEntity.ok().body(startResponse);
-        } catch (Exception e) {
+        }catch (InvalidRequestException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new RideStartResponse(e.getMessage()));
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
