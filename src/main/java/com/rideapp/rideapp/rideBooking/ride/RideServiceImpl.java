@@ -87,17 +87,14 @@ public class RideServiceImpl implements RideService {
             if (RideStatus.Ongoing.equals(request.getRideStatus())) {
                 throw new InvalidRequestException("Invalid ride status: Ongoing");
             }
-            vehicleService.markAvailableAsTrue(request.getVehicleNumber(), request.getVehicleType(), request.getCity(), request.getAreaType());
-            vehicleAvailabilityMapService.increaseCountOfVehicle(request.getVehicleType(), request.getCity(), request.getAreaType());
             Optional<RideEntity> rideEntity = rideRepository.findById(request.getRideId());
             RideEntity ride = rideEntity.get();
-            if (RideStatus.Ongoing.equals(request.getRideStatus())) {
-                throw new InvalidRequestException("Invalid ride status: Ongoing");
-            }
-            ride.setRideStatus(request.getRideStatus());
+            vehicleService.markAvailableAsTrue(ride.getVehicleNumber(), ride.getVehicleType(), ride.getCity(), ride.getAreaType());
+            vehicleAvailabilityMapService.increaseCountOfVehicle(ride.getVehicleType(), ride.getCity(), ride.getAreaType());
+            ride.setRideStatus(RideStatus.Finished);
             rideRepository.save(ride);
             String message = "You ride has finished successfully";
-            return new RideStartResponse(ride.getRideId(), ride.getVehicleNumber(), ride.getVehicleType(), message, request.getTotalFare());
+            return new RideStartResponse(ride.getRideId(), ride.getVehicleNumber(), ride.getVehicleType(), message, ride.getTotalFare());
         } else {
             // Check if the user has an ongoing ride
             List<RideEntity> ongoingRides = rideRepository.findByUserIdAndRideStatus(request.getUserId(), RideStatus.Ongoing);
@@ -123,7 +120,7 @@ public class RideServiceImpl implements RideService {
         rideEntity.setUserId(request.getUserId());
         rideEntity.setDistance(request.getDistance());
         rideEntity.setStops(request.getStops());
-        rideEntity.setRideStatus(request.getRideStatus());
+        rideEntity.setRideStatus(RideStatus.Ongoing);
         rideEntity.setVehicleNumber(vehicleNumber);
         rideEntity.setVehicleType(request.getVehicleType());
         rideEntity.setAreaType(request.getAreaType());

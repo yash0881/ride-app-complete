@@ -39,22 +39,27 @@ public class VehicleServiceImpl implements VehicleService {
         vehicleId.setCity(vehicle.getCity());
         vehicleId.setAreaType(vehicle.getAreaType());
 
+        vehicleEntity.setCreatedAt(LocalDateTime.now());
         vehicleEntity.setVehicleId(vehicleId);
 
         vehicleEntity.setIsAvailable(vehicle.getIsAvailable());
-        vehicleEntity.setCreatedAt(LocalDateTime.now());
-        vehicleEntity.setUpdatedAt(LocalDateTime.now());
+
 
         String veh_num = vehicleEntity.getVehicleId().getVehicleNumber();
         Optional<VehicleEntity> isPresent = vehicleRepository.findByVehicleId_VehicleNumber(veh_num);
 
         if(isPresent.isEmpty() && vehicle.getIsAvailable()){
             // increasing the count of new vehicle in map if it is not a modification request
+                vehicleEntity.setCreatedAt(LocalDateTime.now());
+                vehicleEntity.setUpdatedAt(LocalDateTime.now());
                 vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
         }else if(isPresent.get().getIsAvailable() && !vehicle.getIsAvailable()) {
+            vehicleEntity.setCreatedAt(isPresent.get().getCreatedAt());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
             vehicleAvailabilityMapService.decreaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
         }else if(!isPresent.get().getIsAvailable() && vehicle.getIsAvailable()){
+            vehicleEntity.setCreatedAt(isPresent.get().getCreatedAt());
+            vehicleEntity.setUpdatedAt(LocalDateTime.now());
             vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
         }
 

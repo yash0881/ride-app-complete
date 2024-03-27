@@ -24,7 +24,7 @@ public class RideController {
     }
 
 
-    @GetMapping("/isAvailable")
+    @GetMapping("/availableVehicles")
     public ResponseEntity<?> checkAvailability(@RequestBody RideFareRequest request) {
         try {
             List<RideFareResponse> availableRides = rideService.getAvailableVehiclesWithFare(request);
@@ -39,7 +39,7 @@ public class RideController {
         }
     }
 
-    @GetMapping("/start")
+    @GetMapping("/rideBooking")
     public ResponseEntity<RideStartResponse> startRide(@RequestBody RideStartRequest request) {
         try {
             RideStartResponse startResponse = rideService.startRide(request);
