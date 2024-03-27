@@ -53,6 +53,9 @@ public class VehicleServiceImpl implements VehicleService {
                 vehicleEntity.setCreatedAt(LocalDateTime.now());
                 vehicleEntity.setUpdatedAt(LocalDateTime.now());
                 vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
+        }else if(isPresent.isEmpty() && !vehicle.getIsAvailable()){
+            vehicleEntity.setCreatedAt(LocalDateTime.now());
+            vehicleEntity.setUpdatedAt(LocalDateTime.now());
         }else if(isPresent.get().getIsAvailable() && !vehicle.getIsAvailable()) {
             vehicleEntity.setCreatedAt(isPresent.get().getCreatedAt());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
