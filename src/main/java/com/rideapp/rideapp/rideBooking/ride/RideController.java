@@ -30,7 +30,7 @@ public class RideController {
             List<RideFareResponse> availableRides = rideService.getAvailableVehiclesWithFare(request);
 
             if (availableRides.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No rides available");
+                return ResponseEntity.status(HttpStatus.OK).body("No rides available");
             } else {
                 return ResponseEntity.ok().body(availableRides);
             }
