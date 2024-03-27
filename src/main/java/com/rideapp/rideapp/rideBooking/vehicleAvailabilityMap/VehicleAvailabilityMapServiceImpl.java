@@ -19,7 +19,6 @@ public class VehicleAvailabilityMapServiceImpl implements VehicleAvailabilityMap
 
     @Override
     public void increaseCountOfVehicle(VehicleType vehicleType, String city, AreaType areaType) {
-        System.out.print("hello world");
         VehicleAvailabilityMapEntity vehicleAvailabilityMap = vehicleAvailabilityMapRepository.findByVehicleMapId_VehicleTypeAndVehicleMapId_CityAndVehicleMapId_AreaType(vehicleType, city, areaType);
         int currentCount = vehicleAvailabilityMap.getCount();
         if (currentCount >= 0) {
