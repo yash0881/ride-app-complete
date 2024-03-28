@@ -21,7 +21,7 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
-    @PostMapping("/addVehicles")
+    @PostMapping("/add-vehicles")
     public ResponseEntity<Object> createVehicle(@RequestBody Vehicle vehicle) {
         try {
             Vehicle createdVehicle = vehicleService.addVehicle(vehicle);
