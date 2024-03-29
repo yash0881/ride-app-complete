@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface VehicleRepository extends JpaRepository<VehicleEntity, VehicleId> {
+public interface VehicleRepository extends JpaRepository<VehicleEntity, String> {
 
-    List<VehicleEntity> findByVehicleId_VehicleTypeAndVehicleId_CityAndVehicleId_AreaTypeAndIsAvailableTrue(VehicleType vehicleType, String city, AreaType areaType);
+    List<VehicleEntity> findByVehicleTypeAndCityAndAreaTypeAndIsAvailableTrue(VehicleType vehicleType, String city, AreaType areaType);
 
-    Optional<VehicleEntity> findByVehicleId_VehicleNumber(String vehicleNumber);
+    Optional<VehicleEntity> findByVehicleNumber(String vehicleNumber);
 
 }

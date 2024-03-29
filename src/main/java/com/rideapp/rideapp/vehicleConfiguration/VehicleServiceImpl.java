@@ -32,60 +32,55 @@ public class VehicleServiceImpl implements VehicleService {
         // creating the new object of vehicle
         VehicleEntity vehicleEntity = new VehicleEntity();
 
-        // adding the details of new object
-        VehicleId vehicleId = new VehicleId();
-        vehicleId.setVehicleNumber(vehicle.getVehicleNumber());
-        vehicleId.setVehicleType(vehicle.getVehicleType());
-        vehicleId.setCity(vehicle.getCity());
-        vehicleId.setAreaType(vehicle.getAreaType());
+        vehicleEntity.setVehicleNumber(vehicle.getVehicleNumber());
+        vehicleEntity.setVehicleType(vehicle.getVehicleType());
+        vehicleEntity.setCity(vehicle.getCity());
+        vehicleEntity.setAreaType(vehicle.getAreaType());
 
         vehicleEntity.setCreatedAt(LocalDateTime.now());
-        vehicleEntity.setVehicleId(vehicleId);
 
         vehicleEntity.setIsAvailable(vehicle.getIsAvailable());
 
 
-        String veh_num = vehicleEntity.getVehicleId().getVehicleNumber();
-        Optional<VehicleEntity> isPresent = vehicleRepository.findByVehicleId_VehicleNumber(veh_num);
+        String veh_num = vehicleEntity.getVehicleNumber();
+        Optional<VehicleEntity> isPresent = vehicleRepository.findByVehicleNumber(veh_num);
 
         if(isPresent.isEmpty() && vehicle.getIsAvailable()){
             // increasing the count of new vehicle in map if it is not a modification request
                 vehicleEntity.setCreatedAt(LocalDateTime.now());
                 vehicleEntity.setUpdatedAt(LocalDateTime.now());
-                vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
+                vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleType(), vehicleEntity.getCity(), vehicleEntity.getAreaType());
         }else if(isPresent.isEmpty() && !vehicle.getIsAvailable()){
             vehicleEntity.setCreatedAt(LocalDateTime.now());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
         }else if(isPresent.get().getIsAvailable() && !vehicle.getIsAvailable()) {
             vehicleEntity.setCreatedAt(isPresent.get().getCreatedAt());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
-            vehicleAvailabilityMapService.decreaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
+            vehicleAvailabilityMapService.decreaseCountOfVehicle(vehicleEntity.getVehicleType(), vehicleEntity.getCity(), vehicleEntity.getAreaType());
         }else if(!isPresent.get().getIsAvailable() && vehicle.getIsAvailable()){
             vehicleEntity.setCreatedAt(isPresent.get().getCreatedAt());
             vehicleEntity.setUpdatedAt(LocalDateTime.now());
-            vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleId().getVehicleType(), vehicleEntity.getVehicleId().getCity(), vehicleEntity.getVehicleId().getAreaType());
+            vehicleAvailabilityMapService.increaseCountOfVehicle(vehicleEntity.getVehicleType(), vehicleEntity.getCity(), vehicleEntity.getAreaType());
         }
 
         // saving the new object of vehicle in vehicle table
         VehicleEntity savedEntity = vehicleRepository.save(vehicleEntity);
 
-        return new Vehicle(savedEntity.getVehicleId().getVehicleNumber(), savedEntity.getVehicleId().getVehicleType(), savedEntity.getVehicleId().getCity(), savedEntity.getVehicleId().getAreaType(), savedEntity.getIsAvailable(), savedEntity.getCreatedAt(), savedEntity.getUpdatedAt());
+        return new Vehicle(savedEntity.getVehicleNumber(), savedEntity.getVehicleType(), savedEntity.getCity(), savedEntity.getAreaType(), savedEntity.getIsAvailable(), savedEntity.getCreatedAt(), savedEntity.getUpdatedAt());
     }
-
-
 
 
     @Override
     public VehicleEntity getVehicleNumber(VehicleType vehicleType, String city, AreaType areaType) {
-        List<VehicleEntity> vehicleEntity =  vehicleRepository.findByVehicleId_VehicleTypeAndVehicleId_CityAndVehicleId_AreaTypeAndIsAvailableTrue(vehicleType,city, areaType);
+        List<VehicleEntity> vehicleEntity =  vehicleRepository.findByVehicleTypeAndCityAndAreaTypeAndIsAvailableTrue(vehicleType,city, areaType);
         vehicleEntity.get(0).setIsAvailable(false);
         vehicleRepository.save(vehicleEntity.get(0));
         return vehicleEntity.get(0);
     }
 
     @Override
-    public void markAvailableAsTrue(String vehicleNumber, VehicleType vehicleType, String city, AreaType areaType) {
-        Optional<VehicleEntity> vehicleEntity = vehicleRepository.findByVehicleId_VehicleNumber(vehicleNumber);
+    public void markAvailableAsTrue(String vehicleNumber) {
+        Optional<VehicleEntity> vehicleEntity = vehicleRepository.findByVehicleNumber(vehicleNumber);
         VehicleEntity vehicle = vehicleEntity.get();
         vehicle.setIsAvailable(true);
         vehicleRepository.save(vehicle);

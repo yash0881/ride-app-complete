@@ -6,7 +6,7 @@ public interface VehicleService {
 
     Vehicle addVehicle(Vehicle vehicle);
 
-    void markAvailableAsTrue(String vehicleNumber, VehicleType vehicleType, String city, AreaType areaType);
+    void markAvailableAsTrue(String vehicleNumber);
 
     VehicleEntity getVehicleNumber(VehicleType vehicleType, String city, AreaType areaType);
 

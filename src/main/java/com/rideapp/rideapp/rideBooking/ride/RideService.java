@@ -13,4 +13,6 @@ public interface RideService {
     List<RideFareResponse> getAvailableVehiclesWithFare(RideFareRequest request);
 
     RideStartResponse startRide(RideStartRequest request);
+
+    RideStartResponse endRide(RideStartRequest request);
 }

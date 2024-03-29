@@ -2,10 +2,12 @@ package com.rideapp.rideapp.rideBooking.ride;
 
 import com.rideapp.rideapp.vehicleConfiguration.AreaType;
 import com.rideapp.rideapp.vehicleConfiguration.VehicleType;
+import org.aspectj.lang.annotation.RequiredTypes;
 
 public class RideStartRequest {
 
     private int rideId;
+
     private int userId;
     private int distance;
     private int stops;

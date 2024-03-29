@@ -1,10 +1,7 @@
 package com.rideapp.rideapp.vehicleConfiguration;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +11,21 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "vehicle")
 public class VehicleEntity {
-    @EmbeddedId
-    private VehicleId vehicleId;
+
+    @Id
+    @Column(length = 50, unique = true)
+    private String vehicleNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private VehicleType vehicleType;
+
+    @Column(length = 50)
+    private String city;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
+    private AreaType areaType;
 
     @Value("false")
     @Column(name = "isAvailable")
@@ -33,19 +43,54 @@ public class VehicleEntity {
     public VehicleEntity() {
     }
 
-    public VehicleEntity(VehicleId vehicleId, boolean isAvailable, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.vehicleId = vehicleId;
+    public VehicleEntity(String vehicleNumber, VehicleType vehicleType, String city, AreaType areaType, boolean isAvailable, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.vehicleNumber = vehicleNumber;
+        this.vehicleType = vehicleType;
+        this.city = city;
+        this.areaType = areaType;
         this.isAvailable = isAvailable;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public VehicleId getVehicleId() {
-        return vehicleId;
+    public String getVehicleNumber() {
+        return vehicleNumber;
     }
 
-    public void setVehicleId(VehicleId vehicleId) {
-        this.vehicleId = vehicleId;
+    public void setVehicleNumber(String vehicleNumber) {
+        this.vehicleNumber = vehicleNumber;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public AreaType getAreaType() {
+        return areaType;
+    }
+
+    public void setAreaType(AreaType areaType) {
+        this.areaType = areaType;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
     public boolean getIsAvailable() {

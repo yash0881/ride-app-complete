@@ -11,7 +11,6 @@ import jakarta.persistence.*;
 public class VehicleAvailabilityMapEntity {
 
 
-
     @EmbeddedId
     private VehicleMapId vehicleMapId;
     private int count;
